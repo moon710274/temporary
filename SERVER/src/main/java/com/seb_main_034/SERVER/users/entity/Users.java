@@ -41,4 +41,5 @@ public class Users {
     public Users(String email) {
         this.email = email;
     } // 소셜로그인시 필요함
+
 }
