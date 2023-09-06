@@ -1,5 +1,6 @@
 package com.seb_main_034.SERVER.users.entity;
 
+import com.seb_main_034.SERVER.movie.entity.Movie;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -41,5 +42,8 @@ public class Users {
     public Users(String email) {
         this.email = email;
     } // 소셜로그인시 필요함
+
+    @OneToMany(mappedBy = "user")
+    private List<Movie> movies;
 
 }

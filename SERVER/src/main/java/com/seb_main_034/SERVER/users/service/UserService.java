@@ -113,5 +113,14 @@ public class UserService {
         return usersList.stream().filter(user -> user.getRoles().size() == 1) // 회원은 권한을 오직 1개만 갖고있음
                                  .collect(Collectors.toList());
     }
+    // 아래는 임의 추가 부분
+    public Users setUser(Long userId) {
+        log.info("Service 호출 -> setUser");
+        return repository.findById(userId).orElseThrow(() -> new UserException(ExceptionCode.USER_NOT_FOUND));
+    }
 
+    public Users findUser(Long userId) {
+        log.info("Service 호출 -> findUser");
+        return repository.findById(userId).orElseThrow(() -> new UserException(ExceptionCode.USER_NOT_FOUND));
+    }
 }

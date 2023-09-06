@@ -15,6 +15,10 @@ public class MovieService {
     private final MovieRepository movieRepository;
     private final UserService userService;
 
+    public MovieService(UserService userService) {
+        this.userService = userService;
+    }
+
     public Movie createMovie(Movie movie, Long userId) {
         if (userService.userHasRole(userId, "ADMIN")) {
             movie.setUser(userService.findUser(userId));

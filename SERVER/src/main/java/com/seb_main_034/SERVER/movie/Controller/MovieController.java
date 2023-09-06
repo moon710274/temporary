@@ -62,15 +62,15 @@ public class MovieController {
     @DeleteMapping("/delete/{movie-id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity deleteMovie(@PathVariable("movie-id") @Positive long movieId) {
-        movieService.deleteMovie(movieId);
+        movieService.deleteMovie(movieId;
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    //영화 키워드를 통한 쿼리문 검색기능
-    @GetMapping("/movie-search")
-    public ResponseEntity getMovieSearch(@RequestParam(value = "movie-search" ) String keyWord,
-                                            @Positive int page) {
+    //영화 키워드를 통한 쿼리문 검색
+    @GetMapping("/key-word")
+    public ResponseEntity getMovieSearch(@RequestParam(value = "key-word" ) String keyWord,
+                                         @Positive int page) {
         Page<Movie> moviePage = movieService.findKeyWordMoives(keyWord, page);
         List<Movie> movies = moviePage.getContent();
         List<MovieResponseDto> response = movieMapper.movieToMovieResponseDto(movies);
