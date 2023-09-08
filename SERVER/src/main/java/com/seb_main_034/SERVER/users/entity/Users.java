@@ -43,7 +43,8 @@ public class Users {
         this.email = email;
     } // 소셜로그인시 필요함
 
-    @OneToMany(mappedBy = "user")
+    //유저와 영화의 일대다 관계
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Movie> movies;
 
 }

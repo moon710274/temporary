@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
-public class MovieTotalResponseDto {
+@Setter //Dto 수정하거나 삭제 예정
+public class MovieAllResponseDto {
     private long totalMovies;
 }

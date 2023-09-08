@@ -11,13 +11,10 @@ import javax.validation.constraints.NotNull;
 public class MoviePatchDto {
     private long movieId;
 
-    @NotNull
     private String title;
 
-    @NotNull
-    private Text content;
+    private String content;
 
     private Text description;
 
-    private Long vote;
 }

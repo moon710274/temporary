@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,19 +25,18 @@ public class MovieController {
     private final MovieService movieService;
     private final MovieMapper movieMapper;
 
-    //영화 등록
+    //영화 정보 등록
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity postMovie(@Valid @RequestBody MoviePostDto moviePostDto) {
         Movie movie = movieService.createMovie(movieMapper.moviePostDtoToMovie(moviePostDto));
         MovieResponseDto response = movieMapper.movieToMovieResponseDto(movie);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    //영화 수정
+    //영화 정보 수정
     @PatchMapping("/{movie-id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity patchMovie(@PathVariable("movie-id") @Positive long movieId,
+                                     @Positive long userId,
                                      @Valid @RequestBody MoviePatchDto moviePatchDto) {
         moviePatchDto.setMovieId(movieId);
         Movie movie = movieService.updateMovie(movieMapper.moviePatchDtoToMovie(moviePatchDto));
@@ -48,8 +46,7 @@ public class MovieController {
 
     //전체 영화 조회
     @GetMapping
-    @PreAuthorize("isAuthenticated()")
-    public ResponseEntity getMovie(@Positive @RequestParam int page,
+    public ResponseEntity getMovies(@Positive @RequestParam int page,
                                     @Positive @RequestParam int size) {
         Page<Movie> moviePage = movieService.findMovie(page - 1, size);
         List<Movie> movies = moviePage.getContent();
@@ -58,28 +55,33 @@ public class MovieController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    //영화 삭제
-    @DeleteMapping("/delete/{movie-id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity deleteMovie(@PathVariable("movie-id") @Positive long movieId) {
-        movieService.deleteMovie(movieId;
-
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    //영화 키워드를 통한 쿼리문 검색
-    @GetMapping("/key-word")
-    public ResponseEntity getMovieSearch(@RequestParam(value = "key-word" ) String keyWord,
-                                         @Positive int page) {
-        Page<Movie> moviePage = movieService.findKeyWordMoives(keyWord, page);
+    //평점 상위 영화 10개 조회
+    @GetMapping("/movieTop10")
+    public ResponseEntity getMovies() {
+        Page<Movie> moviePage = movieService.findToMovies();
         List<Movie> movies = moviePage.getContent();
         List<MovieResponseDto> response = movieMapper.movieToMovieResponseDto(movies);
 
         return new ResponseEntity<>(response,HttpStatus.OK);
     }
 
-//    @GetMapping("/{movie-id}/vote-up")
-//    public ResponseEntity patchMovieVoteUp(httpServletRequest request)
-//    @GetMapping("/{movie-id}/vote-down")
-//    public ResponseEntity patchMovieVoteDown
+    //영화 정보 삭제
+    @DeleteMapping("/{movie-id}")
+    public ResponseEntity deleteMovie(@PathVariable("movie-id") @Positive long movieId,
+                                      @Positive long userId) {
+        movieService.deleteMovie(movieId, userId);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    //영화 키워드를 통한 쿼리문 검색
+    @GetMapping("/key-word")
+    public ResponseEntity getSearchMovie(@RequestParam(value = "key-word" ) String keyWord,
+                                         @Positive int page) {
+        Page<Movie> moviePage = movieService.findKeyWordMovies(keyWord, page);
+        List<Movie> movies = moviePage.getContent();
+        List<MovieResponseDto> response = movieMapper.movieToMovieResponseDto(movies);
+
+        return new ResponseEntity<>(response,HttpStatus.OK);
+    }
 }

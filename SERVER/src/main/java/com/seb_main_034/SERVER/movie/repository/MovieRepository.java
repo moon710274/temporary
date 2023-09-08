@@ -9,6 +9,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface MovieRepository extends JpaRepository<Movie, Long> {
     //검색어를 통해 영화의 제목 및 설명(본문 내용) 부분을 키워드를 통해 검색하는 쿼리문으로 구성
-    @Query("SElECT m FROM Movie m WHERE m.title LIKE %:keyWord% OR m.content LIKE %:keyWord%")
+    @Query("SElECT m FROM Movie m WHERE m.title LIKE %:keyWord% OR m.content LIKE %:keyWord% OR m.description Like %:keyWord")
     Page<Movie> findByKeyWordMovie(@Param("keyWord") String keyWord, Pageable pageable);
 }

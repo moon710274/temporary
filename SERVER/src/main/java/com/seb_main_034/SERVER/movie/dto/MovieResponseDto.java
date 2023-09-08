@@ -11,9 +11,8 @@ public class MovieResponseDto {
 
     private String title;
 
-    private Text content;
+    private String content;
 
     private Text description;
 
-    private Long vote;
 }
