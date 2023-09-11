@@ -23,9 +23,6 @@ public class Movie {
     private String title;
 
     @Column(nullable = false)
-    private String content;
-
-    @Column(nullable = false)
     private Text description;
 
     @ManyToOne

@@ -23,7 +23,7 @@ public class MovieService {
 
     //영화 등록
     public Movie createMovie(Movie movie, Long userId) {
-        movie.setUser(userService.findUser(userId));
+        movie.setUser(userService.findById(userId));
         return movieRepository.save(movie);
     }
 
@@ -32,8 +32,8 @@ public class MovieService {
         Movie findMovie = findMovie(movie.getMovieId());
         Long findMovieUserId = findMovie.getUser().getUserId();
         if (findMovieUserId.equals(userId)) {
-            findMovie.setContent(movie.getContent());
             findMovie.setDescription(movie.getDescription());
+            return movieRepository.save(findMovie);
         } else {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,"이 영화를 수정할 권한이 없습니다.");
         }
@@ -59,7 +59,7 @@ public class MovieService {
     //게시글 작성자에 따른 전체 글 조회(관리자에 의한 필요?)
     public Page<Movie> findUserMovies(int page, long userId) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by("movieId").descending());
-        Page<Movie> findMovies = movieRepository.findByUserUserId(userId, pageable);
+        Page<Movie> findMovies = movieRepository.findByUserId(userId, pageable);
 
         return findMovies;
     }
@@ -67,7 +67,7 @@ public class MovieService {
     //쿼리문 검색을 위한 본문 조회
     private Movie findMovieByQuery(long movieId) {
         Optional<Movie> optionalMovie = movieRepository.findById(movieId);
-        return optionalMovie.orElseThrow(() -> new BusinessLogicException(ExceptionCode.MOVIE_NOT_FOUND));
+        return optionalMovie.orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN, "영화를 찾을 수 없습니다."));
     }
 
     public void deleteMovie(long movieId, Long userId) {
@@ -80,7 +80,7 @@ public class MovieService {
         }
     }
 
-    // 10개의 영화 출력, 검색기능 구현을 위한 로직
+    // 10개의 영화 출력, 검색기능 구현
     public Page<Movie> findKeyWordMovies(String keyword, int page) {
         Pageable pageable = PageRequest.of(page, 10, Sort.by("movieId").descending());
 

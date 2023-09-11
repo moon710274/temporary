@@ -27,8 +27,9 @@ public class MovieController {
 
     //영화 정보 등록
     @PostMapping
-    public ResponseEntity postMovie(@Valid @RequestBody MoviePostDto moviePostDto) {
-        Movie movie = movieService.createMovie(movieMapper.moviePostDtoToMovie(moviePostDto));
+    public ResponseEntity postMovie(@Valid @RequestBody MoviePostDto moviePostDto,
+                                    @RequestHeader("userId") Long userId) {
+        Movie movie = movieService.createMovie(movieMapper.moviePostDtoToMovie(moviePostDto), userId);
         MovieResponseDto response = movieMapper.movieToMovieResponseDto(movie);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
@@ -39,7 +40,7 @@ public class MovieController {
                                      @Positive long userId,
                                      @Valid @RequestBody MoviePatchDto moviePatchDto) {
         moviePatchDto.setMovieId(movieId);
-        Movie movie = movieService.updateMovie(movieMapper.moviePatchDtoToMovie(moviePatchDto));
+        Movie movie = movieService.updateMovie(movieMapper.moviePatchDtoToMovie(moviePatchDto), userId);
         MovieResponseDto response = movieMapper.movieToMovieResponseDto(movie);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
@@ -48,7 +49,7 @@ public class MovieController {
     @GetMapping
     public ResponseEntity getMovies(@Positive @RequestParam int page,
                                     @Positive @RequestParam int size) {
-        Page<Movie> moviePage = movieService.findMovie(page - 1, size);
+        Page<Movie> moviePage = movieService.findMovies(page - 1, size);
         List<Movie> movies = moviePage.getContent();
         List<MovieResponseDto> response = movieMapper.movieToMovieResponseDto(movies);
 
@@ -58,7 +59,7 @@ public class MovieController {
     //평점 상위 영화 10개 조회
     @GetMapping("/movieTop10")
     public ResponseEntity getMovies() {
-        Page<Movie> moviePage = movieService.findToMovies();
+        Page<Movie> moviePage = movieService.findMovies();
         List<Movie> movies = moviePage.getContent();
         List<MovieResponseDto> response = movieMapper.movieToMovieResponseDto(movies);
 
